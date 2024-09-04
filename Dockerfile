@@ -35,4 +35,4 @@ RUN yarn build && \
     chmod +x ./bin/ssmgr && \
     npm link
 
-ENTRYPOINT ["ssmgr", "-r", "rust"]
+ENTRYPOINT ["ssmgr"]
