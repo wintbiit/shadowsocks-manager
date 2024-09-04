@@ -49,3 +49,4 @@ plugins/webgui/libs/style.css
 *.sqlite
 
 package-lock.json
+.idea

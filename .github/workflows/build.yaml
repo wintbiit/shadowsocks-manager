@@ -1,0 +1,42 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Cache for Docker
+        uses: actions/cache@v3
+        with:
+          path: npm_cache
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Login to Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: registry.cn-guangzhou.aliyuncs.com
+          username: ${{ secrets.ALIYUN_USERNAME }}
+          password: ${{ secrets.ALIYUN_PASSWORD }}
+
+      - name: Docker Push
+        uses: docker/build-push-action@v5
+        if: github.event_name == 'push'
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          tags: |
+            registry.cn-guangzhou.aliyuncs.com/scutrobot/shadowsocks-manager:latest
+          labels: |
+            org.opencontainers.image.source=https://github.com/wintbiit/shadowsocks-manager
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+            org.opencontainers.image.title=Caddy
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
