@@ -5,6 +5,8 @@ const webpackStream = require('webpack-stream');
 const concat = require('gulp-concat');
 const cleanCSS = require('gulp-clean-css');
 
+const prod = process.env.NODE_ENV === 'production'
+
 gulp.task('clean', () => {
   return del([
     'plugins/webgui/libs/bundle.js',
@@ -78,9 +80,9 @@ gulp.task('webguiBuild', () => {
       }]
     },
     optimization: {
-      minimize: true,
+      minimize: prod,
     },
-    mode: 'production',
+    mode: prod ? 'production' : 'development',
     performance: { hints: false },
   }))
   .pipe(gulp.dest('plugins/webgui/libs'));
