@@ -319,6 +319,7 @@ exports.getSubscribeAccountForUser = async (req, res) => {
           }
         })
       };
+      res.setHeader('Content-Type', 'text/yaml');
       return res.send(yaml.safeDump(generatedConfig));
     }
     if(type === 'mellow') {
@@ -346,6 +347,7 @@ exports.getSubscribeAccountForUser = async (req, res) => {
       .replace('@{GROUP}', 'allServers, ' + subscribeAccount.server.map(s => {
         return `${s.subscribeName || s.name}`;
       }).join(':') + ', latency, interval=300, timeout=6');
+      res.setHeader('Content-Type', 'text/plain');
       return res.send(template);
     }
     if(type === 'android') {
